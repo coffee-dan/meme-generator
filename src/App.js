@@ -1,12 +1,14 @@
-import React from 'react';
-import './App.css';
+import React from 'react'
+import Header from './Header.js'
+import MemeGenerator from './MemeGenerator.js'
 
 function App() {
   return (
     <div className="App">
-      Hello World!
+      <Header />
+      <MemeGenerator />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
