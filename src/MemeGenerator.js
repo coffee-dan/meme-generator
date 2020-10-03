@@ -24,7 +24,8 @@ class MemeGenerator extends React.Component {
             randomImg: "http://i.imgflip.com/1bij.jpg"
         }
 
-        this.onChange = this.onChange.bind(this)
+        this.handleChange = this.handleChange.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
     }
 
     componentDidMount(){
@@ -34,41 +35,56 @@ class MemeGenerator extends React.Component {
         fetch(APILink)
             .then(response => response.json())
             .then(response => {
+                const {memes} = response.data
                 this.setState({
-                    allMemeImgs: response.data.memes,
+                    allMemeImgs: memes,
                     loading: false 
                 })
+                console.log(memes)
             })
     }
 
-    onChange(event) {
+    handleChange(event) {
         const { name, value } = event.target
         this.setState({
             [name]: value
         })
     }
 
+    handleSubmit(event) {
+        event.preventDefault()
+        const randNum = Math.floor(Math.random() * this.state.allMemeImgs.length)
+        const newImg = this.state.allMemeImgs[randNum].url
+        this.setState({
+            randomImg: newImg
+        })
+    }
+
     render(){
         return (
             <div>
-                <form className="meme-form">
+                <form className="meme-form" onSubmit={this.handleSubmit}>
                     <input 
                         type="text"
                         value={this.state.topText}
                         name="topText"
                         placeholder="Top Text"
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <input 
                         type="text"
                         value={this.state.bottomText}
                         name="bottomText"
                         placeholder="Bottom Text"
-                        onChange={this.onChange}
+                        onChange={this.handleChange}
                     />
                     <button>Generate</button>
                 </form>
-                <p>Check it: {this.state.topText} {this.state.bottomText}</p>
+                <div className="meme">
+                    <img src={this.state.randomImg} alt="Meme" />
+                    <h2 className="top">{this.state.topText}</h2>
+                    <h2 className="bottom">{this.state.bottomText}</h2>
+                </div>
             </div>
         )
     }
