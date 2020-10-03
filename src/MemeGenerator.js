@@ -5,6 +5,9 @@ import React from 'react'
  * 
  * API in use is https://api.imgflip.com/ and the data being saved is
  * ('response.data.memes') to the state property 'allMemeImgs'
+ * 
+ * MemeGenerator uses React "controlled forms" to allow users to input the
+ * top and bottom text
  */
 
 
@@ -14,12 +17,14 @@ class MemeGenerator extends React.Component {
 
         this.state = {
             // Variables for assisting in API call
-            allMemeImgs: {},
+            allMemeImgs: [],
             loading: true,
-            topText: "when you",
-            bottomText: "you generate memes",
+            topText: "",
+            bottomText: "",
             randomImg: "http://i.imgflip.com/1bij.jpg"
         }
+
+        this.onChange = this.onChange.bind(this)
     }
 
     componentDidMount(){
@@ -28,17 +33,43 @@ class MemeGenerator extends React.Component {
         const APILink = "https://api.imgflip.com/get_memes"
         fetch(APILink)
             .then(response => response.json())
-            .then(res => {
+            .then(response => {
                 this.setState({
-                    allMemeImgs: res.data.memes,
+                    allMemeImgs: response.data.memes,
                     loading: false 
                 })
             })
     }
-    
+
+    onChange(event) {
+        const { name, value } = event.target
+        this.setState({
+            [name]: value
+        })
+    }
+
     render(){
         return (
-            <h1>Meme Generator section</h1>
+            <div>
+                <form className="meme-form">
+                    <input 
+                        type="text"
+                        value={this.state.topText}
+                        name="topText"
+                        placeholder="Top Text"
+                        onChange={this.onChange}
+                    />
+                    <input 
+                        type="text"
+                        value={this.state.bottomText}
+                        name="bottomText"
+                        placeholder="Bottom Text"
+                        onChange={this.onChange}
+                    />
+                    <button>Generate</button>
+                </form>
+                <p>Check it: {this.state.topText} {this.state.bottomText}</p>
+            </div>
         )
     }
 }
